@@ -76,10 +76,16 @@ def import_from_server(server, app_key, app_secret):
         return session.get("%s/%s" % (server, endpoint))
 
     leaderboards = json.loads(get("leaderboards?tag=v1").content)
-
     output['leaderboards'] = leaderboards
+    for leaderboard in leaderboards:
+        leaderboard['scores'] = json.loads(get("best_scores?leaderboard_id=%s&leaderboard_range=all_time&num_per_page=25&page_num=1" % leaderboard['id']).content)
+    
+    json_output = json.dumps(output, sort_keys=True, indent=4, separators=(',', ': '))
 
-    print output
+    file = open("my_data.json", "w")
+    file.write(json_output)
+    file.write("\n")
+    file.close()
 
 
 def str_type_default(str):
