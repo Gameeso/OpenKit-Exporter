@@ -87,6 +87,10 @@ def import_from_server(server, app_key, app_secret):
     file.write("\n")
     file.close()
 
+    print """
+        Done! Please 
+    """
+
 
 def str_type_default(str):
     return '%s%s%s' % (bcolors.OKBLUE, str, bcolors.ENDC)
