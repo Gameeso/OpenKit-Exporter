@@ -88,7 +88,7 @@ def import_from_server(server, app_key, app_secret):
     file.close()
 
     print """
-        Done! Please 
+        Done! Please put the file my_data.json somewhere safe for later use!
     """
 
 
