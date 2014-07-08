@@ -14,6 +14,7 @@ class bcolors:
     FAIL = '\033[91m'
     ENDC = '\033[0m'
     GREY = '\033[37m'
+    BOLD = '\033[1m'
 
 def intro():
     print """
@@ -78,9 +79,13 @@ def import_from_server(server, app_key, app_secret):
     leaderboards = json.loads(get("leaderboards?tag=v1").content)
     output['leaderboards'] = leaderboards
     output['users'] = []
-    for leaderboard in leaderboards:
-        leaderboard['scores'] = json.loads(get("best_scores?leaderboard_id=%s&leaderboard_range=all_time&num_per_page=25&page_num=1" % leaderboard['id']).content)
-        for score in leaderboard['scores']:
+    
+    def fetch_leaderboard_page(leaderboard, page_num):
+        if not 'scores' in leaderboard:
+            leaderboard['scores'] = []
+        
+        content = json.loads(get("best_scores?leaderboard_id=%s&leaderboard_range=all_time&num_per_page=25&page_num=%s" % (leaderboard['id'], page_num)).content)
+        for score in content:
             # Merge leaderboard data from scores
             inner_leaderboard = score['leaderboard']
             user = score['user']
@@ -90,10 +95,27 @@ def import_from_server(server, app_key, app_secret):
             possible_user = next((item for item in output['users'] if item['id'] == user['id']), None)
             if possible_user == None:
                 output['users'].append(user)
+                print str_type_progress("\t\tUser found, id: %s%s%s" % (bcolors.BOLD, user['id'], bcolors.ENDC))
             
-
             score.pop('leaderboard', None)
             score.pop('user', None)
+            
+        leaderboard['scores'].extend(content)
+
+        return content
+    
+    for leaderboard in leaderboards:
+        page_num = 1
+        
+        print str_type_progress("Fetching leaderboard id: %s%s%s" % (bcolors.BOLD, leaderboard['id'], bcolors.ENDC))
+        
+        result = None
+        while result != []:
+            print str_type_progress("\tFetching leaderboard page %s%s%s" % (bcolors.BOLD, page_num, bcolors.ENDC))
+            result = fetch_leaderboard_page(leaderboard, page_num)
+            page_num = page_num + 1
+        
+        print str_type_progress("No more pages left for leaderboard id: %s%s%s" % (bcolors.BOLD, leaderboard['id'], bcolors.ENDC))
     
     json_output = json.dumps(output, sort_keys=True, indent=4, separators=(',', ': '))
 
@@ -107,6 +129,8 @@ def import_from_server(server, app_key, app_secret):
         I worked on this tool in my free time and made it freely available, if this tool helped you, please consider a donation: http://gameeso.com/#donation
     """
 
+def str_type_progress(str):
+    return str
 
 def str_type_default(str):
     return '%s%s%s' % (bcolors.OKBLUE, str, bcolors.ENDC)
