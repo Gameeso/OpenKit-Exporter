@@ -17,7 +17,7 @@ class bcolors:
 
 def intro():
     print """
-                      Proudly build by%s
+                      Proudly built by%s
                         ███████████
                      █████████████████
                      █████████████████                      
@@ -46,12 +46,12 @@ def intro():
 
     print """
 Welcome to the Export tool for OpenKit!
-This tool allows you to locally store all the data we can get from OpenKit, so you can keep it safe after the 1 december deadline.
+This tool allows you to locally store all the data we can get from OpenKit, so you can keep it safe after the 1 December deadline.
 
 After Gameeso is done, I (or we depending on how the community grows :)) will allow you to import that data again in Gameeso to continue your services.
-Please follow the instructions along.
+Please follow along with the instructions.
 
-This tool functions like a insurance policy, to keep at least your data safe whenether or not I decide to continue with Gameeso.
+This tool functions like a insurance policy, to at least keep your data safe whenether or not I decide to continue with Gameeso.
 
 With great love, Peter Willemsen.
 More Info: http://gameeso.com/openkit-notes/
